@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
         height: 120,
         width: "100%",
         position: 'absolute',
-        zIndex: 1,
         paddingHorizontal: 24,
         paddingVertical: 12,   
         flexDirection:"row",  
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
       },
       rightContainer: {
         flex: 1,
-        alignItems: 'flex-end', // Canh phải
+        alignItems: 'flex-end',
       },
     moonOptionContainer: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',

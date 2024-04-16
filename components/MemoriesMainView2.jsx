@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react'; 
-import { Image, ScrollView, Text, View } from 'react-native'; 
+import { Image, ScrollView, TouchableOpacity,Text, View } from 'react-native'; 
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { useNavigation } from '@react-navigation/native';
 import styles from './memoriesMainView2.style';
-const images = [ 
-  require("../assets/image/Moon/moon1.png"), 
-  require("../assets/image/Moon/moon2.png"), 
-  require("../assets/image/Moon/moon3.png"), 
-  require("../assets/image/Moon/moon4.png"), 
-  require("../assets/image/Moon/moon5.png"), 
-] 
+import images from '../data/data';
+
+const image = images;
 const MemoriesMainView2 = () => { 
   const navigation = useNavigation();
   const [diaryEntries, setDiaryEntries] = useState([]); 
+  const [entriesByMonth, setEntriesByMonth] = useState({});
   const fetchDiaryEntries = async () => {
     try {
       const entries = await AsyncStorage.getItem('diaryEntries');
@@ -47,6 +44,18 @@ const MemoriesMainView2 = () => {
 
     return unsubscribe;
   }, []);
+  useEffect(() => {
+    const entriesByMonth = {};
+    diaryEntries.forEach(entry => {
+      const { month } = entry;
+      entriesByMonth[month] = entriesByMonth[month] ? [...entriesByMonth[month], entry] : [entry];
+    });
+    setEntriesByMonth(entriesByMonth);
+  }, [diaryEntries]);
+  const navigateToImageDetail = (entry) => {
+    navigation.navigate('DetailNote', { entry: entry });
+  };
+
   const monthTranslations = {
     'Tháng 1': 'January',
     'Tháng 2': 'February',
@@ -64,6 +73,7 @@ const MemoriesMainView2 = () => {
   return ( 
     <ScrollView style={styles.mainMemoriesContainer}> 
     {diaryEntries.map((entry, index) => ( 
+      <TouchableOpacity key={index} onPress={() => navigateToImageDetail(entry)}>
       <View key={index} style={styles.itemContainer }>  
       <View style={styles.dayContainer}>
         <Text style={{fontFamily:"title", color:"#ffffff", fontSize:8}}>{entry.year}</Text>
@@ -73,8 +83,9 @@ const MemoriesMainView2 = () => {
         <Text numberOfLines={2} style={{fontFamily:"title", color:"#ffffff", fontSize:8}}>{entry.content}</Text>
         </View>
         {/* <Text>{entry.selectedImage}</Text> */}
-        <Image source={images[entry.selectedImage]}></Image>
+        <Image style={{width:32, height:32}} source={image[entry.selectedImage]}></Image>
       </View>   
+      </TouchableOpacity>
     ))} 
   </ScrollView> 
   ) 

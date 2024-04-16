@@ -1,23 +1,21 @@
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native' 
-import React, { useEffect, useState } from 'react' 
+import React, { useContext, useEffect, useState } from 'react' 
 import styles from './diary.style' 
 import Moon from '../components/Moon' 
 import AsyncStorage from '@react-native-async-storage/async-storage' 
-const clearAllData = async () => {
-  try {
-      await AsyncStorage.clear();
-      console.log('Xóa tất cả dữ liệu thành công!');
-  } catch (error) {
-      console.log('Đã có lỗi xảy ra khi xóa dữ liệu:', error);
-  }
-}
-const images = [ 
-  require("../assets/image/Moon/moon1.png"), 
-  require("../assets/image/Moon/moon2.png"), 
-  require("../assets/image/Moon/moon3.png"), 
-  require("../assets/image/Moon/moon4.png"), 
-  require("../assets/image/Moon/moon5.png"), 
-] 
+import images from '../data/data'
+import dataBg from '../data/dataBg'
+import { ThemeContext, ThemeProvider } from '../components/ThemeContext'
+// const clearAllData = async () => {
+//   try {
+//       await AsyncStorage.clear();
+//       console.log('Xóa tất cả dữ liệu thành công!');
+//   } catch (error) {
+//       console.log('Đã có lỗi xảy ra khi xóa dữ liệu:', error);
+//   }
+// }
+// clearAllData()
+const image = images[0].urls
 const Diary = () => { 
   const [isMuted, setIsMuted] = useState(false); 
   const handleToggleMute = () => { 
@@ -44,13 +42,17 @@ const Diary = () => {
   }; 
   const handleImageSelect = (index) => { 
     setSelectedImage(index); 
-    AsyncStorage.setItem('selectedImageIndex', index.toString()); // Lưu chỉ số vào AsyncStorage
+    AsyncStorage.setItem('selectedImageIndex', index.toString()); 
   }; 
-  return ( 
-    <ImageBackground style={styles.backgroundContainer} 
-      source={require("../assets/image/backgr.png")} 
-      resizeMode='cover' 
-    > 
+  const { selectedTheme, setSelectedTheme } = useContext(ThemeContext);
+  const defaultTheme = dataBg[0]
+  useEffect(() => {
+      if (!selectedTheme) {
+          setSelectedTheme(defaultTheme);
+      }
+  }, [selectedTheme]);
+  return (
+      <ImageBackground source={selectedTheme} style={styles.backgroundContainer} resizeMode='cover'>
       <View style={styles.headingContainer}> 
         <View style={styles.backgroundHeadingContainer}> 
           <View style={styles.leftContainer}> 
@@ -67,7 +69,7 @@ const Diary = () => {
         </View> 
       </View> 
       <View style={styles.moonOptionContainer}> 
-        <Moon imageUrl={images} handleImageSelect={handleImageSelect} /> 
+        <Moon imageUrl={image} handleImageSelect={handleImageSelect} /> 
         <TextInput placeholder='Title' value={title} 
           onChangeText={setTitle} placeholderTextColor="#ffffff" style={{ color: "#ffffff", fontSize: 15, fontFamily: "title" }}></TextInput> 
         <Image source={require("../assets/image/Vector 1.png")} /> 

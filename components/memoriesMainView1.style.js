@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     imageContainer: {
       marginTop: 15,
       flexDirection: "row",
-      flexWrap: "wrap", // Cho phép các phần tử wrap sang hàng mới khi cần
+      flexWrap: "wrap",
   },
   itemContainer:{
     flexDirection:"column",

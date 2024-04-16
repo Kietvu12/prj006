@@ -1,17 +1,14 @@
 // Import những thư viện cần thiết
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import styles from './memoriesMainView1.style';
-const images = [
-  require("../assets/image/Moon/moon1.png"),
-  require("../assets/image/Moon/moon2.png"),
-  require("../assets/image/Moon/moon3.png"),
-  require("../assets/image/Moon/moon4.png"),
-  require("../assets/image/Moon/moon5.png"),
-];
-const MemoriesMainView1 = () => {
+import DetailNote from '../screens/DetailNote';
+import images from '../data/data';
+
+const image = images
+const MemoriesMainView1 = ({}) => {
   const navigation = useNavigation();
   const [diaryEntries, setDiaryEntries] = useState([]);
   const [entriesByMonth, setEntriesByMonth] = useState({});
@@ -55,28 +52,31 @@ const MemoriesMainView1 = () => {
     });
     setEntriesByMonth(entriesByMonth);
   }, [diaryEntries]);
+  const navigateToImageDetail = (entry) => {
+    navigation.navigate('DetailNote', { entry: entry });
+  };
 
   return (
     <ScrollView style={styles.mainMemoriesContainer}>
-      {Object.keys(entriesByMonth).map(month => (
-        <View style={{alignItems:"center"}} key={month}>
-          <Text style={{ fontFamily: "title", color: "white", fontSize: 20, justifyContent: "center" }}>
-            {month} {entriesByMonth[month][0].year}
-          </Text>
-          <View style={styles.imageContainer}>
-            {entriesByMonth[month].map((entry, index) => (
-              <View key={index}>
-                <View style ={styles.itemContainer}>
-                <Image source={images[entry.selectedImage]}></Image>
+    {Object.keys(entriesByMonth).map(month => (
+      <View style={{ alignItems: "center" }} key={month}>
+        <Text style={{ fontFamily: "title", color: "white", fontSize: 20, justifyContent: "center" }}>
+          {month} {entriesByMonth[month][0].year}
+        </Text>
+        <View style={styles.imageContainer}>
+          {entriesByMonth[month].map((entry, index) => (
+            <TouchableOpacity key={index} onPress={() => navigateToImageDetail(entry)}>
+              <View style={styles.itemContainer}>
+                <Image source={image[entry.selectedImage]} />
                 <Text style={{ fontFamily: "title", color: "white", fontSize: 8, justifyContent: "center" }}>{entry.day}</Text>
-                </View>
               </View>
-            ))}
-          </View>
+            </TouchableOpacity>
+          ))}
         </View>
-      ))}
-    </ScrollView>
-  );
+      </View>
+    ))}
+  </ScrollView>
+);
 };
 
 export default MemoriesMainView1;

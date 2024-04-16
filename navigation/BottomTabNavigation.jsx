@@ -20,7 +20,7 @@ const screensOption = {
         bottom: 20,
         right: 8,
         left: 8,
-
+        borderTopWidth: 0, // Loại bỏ đường viền
     }
 }
 
@@ -114,7 +114,7 @@ const BottomTabNavigation = () => {
       />
       <Tab.Screen
       name='Collection'
-      component={Home}
+      component={Collection}
       options={{
         tabBarIcon:({focused}) => {
           return(

@@ -6,7 +6,7 @@ const Moon = ({ imageUrl, handleImageSelect }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
-    handleImageSelect(index); // Gọi handleImageSelect từ props
+    handleImageSelect(index); 
   };  
   return (
     <View style={styles.optionContainer}>
