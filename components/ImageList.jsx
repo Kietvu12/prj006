@@ -38,8 +38,16 @@ const ImageList = () => {
             }
             setUnlockedImages(newUnlockedImages);
             setTotalCards(totalCardsCount);
-            setIsImagesUnlocked(newUnlockedImages.length >= 3 && newUnlockedImages.length <= dataBg.length);
+            const newIsImagesUnlocked = newUnlockedImages.length >= 3 && newUnlockedImages.length <= dataBg.length;
+          setIsImagesUnlocked(newIsImagesUnlocked);
+          if (newIsImagesUnlocked) {
+            const selectedMoodIndex = newUnlockedImages.length - 1;
+            setSelectedMood(dataBg[selectedMoodIndex]);
+          } else {
+            setSelectedMood(defaultMood);
           }
+        }
+
         } catch (error) {
           console.error('Error checking unlock status from AsyncStorage:', error);
         }
