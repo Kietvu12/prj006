@@ -23,32 +23,36 @@ const Theme = () => {
     setSelectedTheme(defaultTheme);
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const checkUnlockStatus = async () => {
-        try {
-          const cardsHistory = await AsyncStorage.getItem('cardsHistory');
-          if (cardsHistory) {
-            const updatedHistory = JSON.parse(cardsHistory);
-            const totalCardsCount = updatedHistory.length;
-            const unlockedCount = Math.floor(totalCardsCount / 3);
-            let newUnlockedImages = [];
-            for (let i = 0; i <= Math.min(unlockedCount, 3); i++) {
-              newUnlockedImages.push(i);
-            }
-            setUnlockedImages(newUnlockedImages);
-            setTotalCards(totalCardsCount);
-            setIsImagesUnlocked(newUnlockedImages.length >= 3 && newUnlockedImages.length <= dataBg.length);
+  useEffect(() => {
+    const checkUnlockStatus = async () => {
+      try {
+        const cardsHistory = await AsyncStorage.getItem('cardsHistory');
+        if (cardsHistory) {
+          const updatedHistory = JSON.parse(cardsHistory);
+          const totalCardsCount = updatedHistory.length;
+          const unlockedCount = Math.floor(totalCardsCount / 3);
+          let newUnlockedImages = [];
+          for (let i = 0; i <= Math.min(unlockedCount, 3); i++) {
+            newUnlockedImages.push(i);
           }
-        } catch (error) {
-          console.error('Error checking unlock status from AsyncStorage:', error);
+          setUnlockedImages(newUnlockedImages);
+          setTotalCards(totalCardsCount);
+          const newIsImagesUnlocked = newUnlockedImages.length >= 3 && newUnlockedImages.length <= dataBg.length;
+          setIsImagesUnlocked(newIsImagesUnlocked);
+          if (newIsImagesUnlocked) {
+            const selectedThemeIndex = newUnlockedImages.length - 1;
+            setSelectedTheme(dataBg[selectedThemeIndex]);
+          } else {
+            setSelectedTheme(defaultTheme);
+          }
         }
-      };
-
-      updateTheme();
-      checkUnlockStatus(); 
-    }, [])
-  );
+      } catch (error) {
+        console.error('Error checking unlock status from AsyncStorage:', error);
+      }
+    };
+    updateTheme();
+    checkUnlockStatus();
+  }, []);
 
   return (
     <ImageBackground source={selectedTheme} style={styles.backgroundContainer} resizeMode='cover'>
